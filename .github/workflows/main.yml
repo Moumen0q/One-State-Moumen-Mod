@@ -1,0 +1,34 @@
+name: Build Tweak
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install ldid
+          git clone --recursive https://github.com/theos/theos.git ~/theos
+          
+          # تحميل الـ SDK لضمان نجاح بناء التويك
+          mkdir -p ~/theos/sdks
+          curl -LO https://github.com/theos/sdks/archive/refs/heads/master.zip
+          unzip master.zip
+          mv sdks-master/* ~/theos/sdks/
+          rm -rf master.zip sdks-master
+
+      - name: Build
+        run: |
+          export THEOS=~/theos
+          make clean
+          make
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OneStateMoumenMod
+          path: packages/
