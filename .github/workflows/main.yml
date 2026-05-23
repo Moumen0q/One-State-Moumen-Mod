@@ -14,7 +14,7 @@ jobs:
           brew install ldid
           git clone --recursive https://github.com/theos/theos.git ~/theos
           
-          # تحميل الـ SDK لضمان نجاح بناء التويك
+          # تحميل الـ SDK المضمون والمستقر لنظام iOS
           mkdir -p ~/theos/sdks
           curl -LO https://github.com/theos/sdks/archive/refs/heads/master.zip
           unzip master.zip
@@ -25,7 +25,7 @@ jobs:
         run: |
           export THEOS=~/theos
           make clean
-          make
+          make FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
